@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'dart:convert'; // Import dart:convert for jsonDecode
 import 'models/answer_model.dart'; // Import AnswerModel
 import 'main.dart'; // Import halaman utama
 import 'package:flutter_gemini/flutter_gemini.dart'; // Import flutter_gemini
+import 'package:shared_preferences/shared_preferences.dart'; // Import shared_preferences
 
 class ResultScreen extends StatelessWidget {
   final List<AnswerModel> answers;
@@ -13,6 +15,11 @@ class ResultScreen extends StatelessWidget {
     1: [2, 3, 2, 3, 4], // Stage 1
     2: [1, 2, 2, 2, 2], // Stage 2
   };
+
+  Future<void> _saveResult(String result) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('quiz_result', result);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +44,7 @@ class ResultScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Hasil Kuiz'),
-        backgroundColor: Colors.yellow,
+        backgroundColor: Colors.orange,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
@@ -110,7 +117,7 @@ class ResultScreen extends StatelessWidget {
           final gemini = Gemini.instance;
           try {
             final result = await gemini.text(
-                'Berdasarkan hasil kuis, persentase jawaban benar untuk Stage 1 (disleksia) adalah ${percentageStage1.toStringAsFixed(2)}% dan untuk Stage 2 (diskalkulia) adalah ${percentageStage2.toStringAsFixed(2)}%. Berikan diagnosis dan saran untuk orang tua dalam format JSON dengan struktur {diagnosis:"", saranortu:""}');
+                'Berdasarkan hasil kuis, persentase jawaban benar untuk Stage 1 (disleksia) adalah ${percentageStage1.toStringAsFixed(2)}% dan untuk Stage 2 (diskalkulia) adalah ${percentageStage2.toStringAsFixed(2)}%. Berikan output diagnosis dan saran untuk orang tua yang dapat di lakukan di rumah dalam format JSON dengan struktur {diagnosis:"", saranortu:"", pengertianDisleksia:"", pengertianDiskalkulia:"", caraPenanganan:""} dan jangan ada sepert ```json hanya json saja');
 
             String formattedResult =
                 result?.output ?? 'Tidak ada hasil dari AI';
@@ -119,46 +126,178 @@ class ResultScreen extends StatelessWidget {
               (match) => '**${match.group(1)}**',
             );
 
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: Text('Hasil AI'),
-                  content: SingleChildScrollView(
-                    child: Text(formattedResult),
-                  ),
-                  actions: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Text('Tutup'),
-                    ),
-                  ],
-                );
-              },
+            await _saveResult(formattedResult); // Save result to local disk
+
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ResultDetailScreen(
+                  result: formattedResult,
+                  percentageStage1: percentageStage1,
+                  percentageStage2: percentageStage2,
+                ),
+              ),
             );
           } catch (e) {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: Text('Error'),
-                  content: Text('Terjadi kesalahan: $e'),
-                  actions: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Text('Tutup'),
-                    ),
-                  ],
-                );
-              },
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ResultDetailScreen(
+                  result: 'Terjadi kesalahan: $e',
+                  percentageStage1: percentageStage1,
+                  percentageStage2: percentageStage2,
+                ),
+              ),
             );
           }
         },
         child: Icon(Icons.info),
+      ),
+    );
+  }
+}
+
+class ResultDetailScreen extends StatelessWidget {
+  final String result;
+  final double percentageStage1;
+  final double percentageStage2;
+
+  ResultDetailScreen({
+    required this.result,
+    required this.percentageStage1,
+    required this.percentageStage2,
+  });
+
+  Future<String?> _loadResult() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('quiz_result');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Map<String, dynamic> jsonResult = {};
+    try {
+      jsonResult = jsonDecode(result);
+    } catch (e) {
+      // Handle JSON decode error
+    }
+
+    // Calculate inverted percentages
+    double invertedPercentageStage1 = 100 - percentageStage1;
+    double invertedPercentageStage2 = 100 - percentageStage2;
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Analisa'),
+        backgroundColor: Colors.orange,
+      ),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.all(16.0),
+        child: jsonResult.isNotEmpty
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Hasil Diagnosa',
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 16.0),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Column(
+                        children: [
+                          Text(
+                            'Disleksia',
+                            style: TextStyle(fontSize: 18),
+                          ),
+                          Text(
+                            '${invertedPercentageStage1.toStringAsFixed(2)}%',
+                            style: TextStyle(
+                                fontSize: 24, fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          Text(
+                            'Diskalkulia',
+                            style: TextStyle(fontSize: 18),
+                          ),
+                          Text(
+                            '${invertedPercentageStage2.toStringAsFixed(2)}%',
+                            style: TextStyle(
+                                fontSize: 24, fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 16.0),
+                  Text(
+                    'Pengertian',
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 8.0),
+                  Text(
+                    'Disleksia',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  Text(jsonResult['pengertianDisleksia'] ?? ''),
+                  SizedBox(height: 8.0),
+                  Text(
+                    'Diskalkulia',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  Text(jsonResult['pengertianDiskalkulia'] ?? ''),
+                  SizedBox(height: 16.0),
+                  Text(
+                    'Apa yang harus orang tua lakukan?',
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                  Text(jsonResult['saranortu'] ?? ''),
+                  SizedBox(height: 16.0),
+                  Text(
+                    'Cara Penanganan',
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                  Text(jsonResult['caraPenanganan'] ?? ''),
+                ],
+              )
+            : Column(
+                children: [
+                  Text(result),
+                  SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (context) => MyApp()),
+                        (Route<dynamic> route) => false,
+                      );
+                    },
+                    child: Text('Kembali ke Home'),
+                  ),
+                ],
+              ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          final result = await _loadResult(); // Load result from local disk
+          if (result != null) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ResultDetailScreen(
+                  result: result,
+                  percentageStage1: percentageStage1,
+                  percentageStage2: percentageStage2,
+                ),
+              ),
+            );
+          }
+        },
+        child: Icon(Icons.refresh),
       ),
     );
   }

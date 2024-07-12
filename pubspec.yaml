@@ -30,7 +30,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  shared_preferences: ^2.0.6
   flutter_gemini: ^2.0.4
+  flutter_json_viewer: ^1.0.0
 
 
 

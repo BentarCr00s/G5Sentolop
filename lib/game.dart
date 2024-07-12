@@ -7,12 +7,14 @@ import 'models/answer_model.dart'; // Import AnswerModel
 
 class GameScreen extends StatelessWidget {
   final PageController _pageController = PageController();
-  final List<AnswerModel> _answers = []; // List to store answers
+  final List<AnswerModel> answers; // Accept answers list as a parameter
+
+  GameScreen({required this.answers}); // Add named parameter 'answers'
 
   @override
   Widget build(BuildContext context) {
     // Reset answers when starting the game
-    _answers.clear();
+    answers.clear();
 
     return Scaffold(
       body: PageView(
@@ -20,11 +22,11 @@ class GameScreen extends StatelessWidget {
         physics: NeverScrollableScrollPhysics(), // Disable swipe
         children: [
           StageSplashScreen(stage: 1, pageController: _pageController),
-          ...stage1Screens(_pageController, _answers),
+          ...stage1Screens(_pageController, answers),
           StageSplashScreen(stage: 2, pageController: _pageController),
-          ...stage2Screens(_pageController, _answers),
+          ...stage2Screens(_pageController, answers),
           EndScreen(
-              answers: _answers,
+              answers: answers,
               pageController: _pageController), // Pass answers to EndScreen
         ],
       ),
@@ -40,7 +42,7 @@ class StageSplashScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Timer(Duration(seconds: 2), () {
+    Timer(Duration(seconds: 3), () {
       pageController.nextPage(
         duration: Duration(milliseconds: 500),
         curve: Curves.easeIn,
@@ -53,7 +55,7 @@ class StageSplashScreen extends StatelessWidget {
         child: Text(
           'STAGE $stage',
           style: TextStyle(
-            color: Color(0xFFFFF8EC),
+            color: Colors.white,
             fontSize: 40,
             fontWeight: FontWeight.bold,
           ),
@@ -71,7 +73,7 @@ class EndScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Timer(Duration(seconds: 2), () {
+    Timer(Duration(seconds: 3), () {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -81,12 +83,12 @@ class EndScreen extends StatelessWidget {
     });
 
     return Scaffold(
-      backgroundColor: Colors.orange,
+      backgroundColor: Colors.yellow,
       body: Center(
         child: Text(
           'SELESAI',
           style: TextStyle(
-            color: Color(0xFFFFF8EC),
+            color: Colors.white,
             fontSize: 40,
             fontWeight: FontWeight.bold,
           ),
@@ -118,7 +120,7 @@ class ResultSplashScreen extends StatelessWidget {
         child: Text(
           'Lihat Hasil',
           style: TextStyle(
-            color: Color(0xFFFFF8EC),
+            color: Colors.white,
             fontSize: 40,
             fontWeight: FontWeight.bold,
           ),
