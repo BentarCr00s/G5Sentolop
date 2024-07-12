@@ -33,7 +33,7 @@ class SplashScreen extends StatelessWidget {
             );
           },
           child: Image.asset(
-            'assets/x.png', // Replace with your logo asset
+            'assets/logo.png', // Replace with your logo asset
             width: 100,
             height: 100,
           ),
@@ -47,16 +47,33 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Dyslexia App'),
-        centerTitle: true,
-      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
+              Center(
+                child: Image.asset(
+                  'assets/minilogo.png', // Replace with your minilogo asset
+                  width: 100,
+                  height: 100,
+                ),
+              ),
+              SizedBox(height: 20),
+              Center(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(
+                      20.0), // Adjust the radius as needed
+                  child: Image.asset(
+                    'assets/wallpaper.png', // Replace with your wallpaper asset
+                    width: double.infinity,
+                    height: 200,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
               Row(
                 // Tambahkan Row untuk menempatkan tombol secara horizontal
                 children: <Widget>[
@@ -94,8 +111,7 @@ class HomeScreen extends StatelessWidget {
                         style: TextStyle(color: Colors.white), // Warna teks
                       ),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            Color(0xE5DAC6), // Ganti warna tombol
+                        backgroundColor: Color(0xE5DAC6), // Ganti warna tombol
                         minimumSize: Size(double.infinity, 50),
                         shape: RoundedRectangleBorder(
                           borderRadius:

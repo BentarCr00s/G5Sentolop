@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
+import 'stage1.dart';
+import 'stage2.dart';
+import 'result.dart';
+import 'models/answer_model.dart'; // Import AnswerModel
 
 class GameScreen extends StatelessWidget {
   final PageController _pageController = PageController();
+  final List<AnswerModel> _answers = []; // List to store answers
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Game Screen'),
-      ),
       body: PageView(
         controller: _pageController,
         children: [
           StageScreen(pageController: _pageController, stageNumber: 1),
-          GameContentScreen(pageController: _pageController),
+          ...stage1Screens(_pageController, _answers),
           StageScreen(pageController: _pageController, stageNumber: 2),
+          ...stage2Screens(_pageController, _answers),
+          EndScreen(answers: _answers), // Pass answers to EndScreen
         ],
       ),
     );
@@ -29,80 +33,57 @@ class StageScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
+    return GestureDetector(
+      onTap: () {
+        pageController.nextPage(
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeIn,
+        );
+      },
+      child: Container(
+        color: Colors.yellow,
+        child: Center(
+          child: Text(
             'Stage $stageNumber',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            style: TextStyle(
+                fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
           ),
-          SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: () {
-              // Navigate to the next page in PageView
-              pageController.nextPage(
-                duration: Duration(milliseconds: 300),
-                curve: Curves.easeIn,
-              );
-            },
-            child: Text('Start Game'),
-          ),
-        ],
+        ),
       ),
     );
   }
 }
 
-class GameContentScreen extends StatelessWidget {
-  final PageController pageController;
+class EndScreen extends StatelessWidget {
+  final List<AnswerModel> answers;
 
-  GameContentScreen({required this.pageController});
+  EndScreen({required this.answers});
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            'Berapa jumlah suku kata dari kata-kata ini?',
-            style: TextStyle(fontSize: 18),
-          ),
-          SizedBox(height: 20),
-          Image.asset('assets/singa.png'), // Replace with your image asset
-          Text(
-            'Si-nga',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(5, (index) {
-              return Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: ElevatedButton(
-                  onPressed: () {
-                    // Handle button press
-                  },
-                  child: Text('${index + 1}'),
+    return Scaffold(
+      body: Container(
+        color: Colors.yellow,
+        child: Center(
+          child: ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ResultScreen(answers: answers),
                 ),
               );
-            }),
-          ),
-          SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: () {
-              // Navigate to the next page in PageView
-              pageController.nextPage(
-                duration: Duration(milliseconds: 300),
-                curve: Curves.easeIn,
-              );
             },
-            child: Text('Konfirmasi'),
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+            child: Text(
+              'Lihat Hasil',
+              style: TextStyle(color: Colors.white),
+            ),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.green,
+              minimumSize: Size(200, 50),
+            ),
           ),
-        ],
+        ),
       ),
     );
   }
