@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'result.dart';
 import 'models/answer_model.dart'; // Import AnswerModel
 
 List<Widget> stage2Screens(
@@ -29,6 +28,7 @@ class _Soal1State extends State<Soal1> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFFFFF8EC),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -147,6 +147,7 @@ class _Soal2State extends State<Soal2> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFFFFF8EC),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -265,6 +266,7 @@ class _Soal3State extends State<Soal3> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFFFFF8EC),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -383,6 +385,7 @@ class _Soal4State extends State<Soal4> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFFFFF8EC),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -501,6 +504,7 @@ class _Soal5State extends State<Soal5> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFFFFF8EC),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -583,12 +587,9 @@ class _Soal5State extends State<Soal5> {
               : () {
                   widget.answers.add(AnswerModel(
                       stage: 2, question: 5, answer: selectedAnswer));
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          ResultScreen(answers: widget.answers),
-                    ),
+                  widget.pageController.nextPage(
+                    duration: Duration(milliseconds: 300),
+                    curve: Curves.easeIn,
                   );
                 },
           child: Text(

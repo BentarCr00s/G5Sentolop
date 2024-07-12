@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gemini/flutter_gemini.dart';
 import 'game.dart';
+import 'dart:async';
 
 void main() {
+  Gemini.init(apiKey: 'AIzaSyBk5LX2qCVqE69XWuylJtAq9JyyQR6-fTI');
   runApp(MyApp());
 }
 
@@ -22,16 +25,23 @@ class MyApp extends StatelessWidget {
 class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    Timer(Duration(seconds: 2), () {
+      Navigator.pushReplacement(
+        context,
+        _createRoute(),
+      );
+    });
+
     return Scaffold(
       backgroundColor: Colors.blue,
-      body: Center(
-        child: GestureDetector(
-          onTap: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => HomeScreen()),
-            );
-          },
+      body: GestureDetector(
+        onTap: () {
+          Navigator.pushReplacement(
+            context,
+            _createRoute(),
+          );
+        },
+        child: Center(
           child: Image.asset(
             'assets/logo.png', // Replace with your logo asset
             width: 100,
@@ -39,6 +49,26 @@ class SplashScreen extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Route _createRoute() {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => HomeScreen(),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        const begin = Offset(0.0, 1.0);
+        const end = Offset.zero;
+        const curve = Curves.ease;
+
+        var tween =
+            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+        var offsetAnimation = animation.drive(tween);
+
+        return SlideTransition(
+          position: offsetAnimation,
+          child: child,
+        );
+      },
     );
   }
 }
@@ -139,7 +169,7 @@ class HomeScreen extends StatelessWidget {
                     'Diskalkulia adalah kesulitan dalam cara otak memproses bahasa tertulis dan lisan. Ini sebagian besar mempengaruhi kemampuan membaca dan dapat diseb...',
               ),
               SizedBox(height: 20),
-              Text('Made with ♥ by Nigga'),
+              Text('Made with ♥ by C++nToLoop'),
             ],
           ),
         ),

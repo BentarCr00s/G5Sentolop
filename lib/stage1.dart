@@ -31,14 +31,17 @@ class _Soal1State extends State<Soal1> {
       backgroundColor: Color(0xFFFFF8EC),
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding:
+              const EdgeInsets.symmetric(horizontal: 24.0), // Adjusted margin
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center, // Center align text
             children: [
               Center(
                 child: Text(
                   'Berapa jumlah suku kata dari kata-kata ini?',
                   style: TextStyle(fontSize: 18),
+                  textAlign: TextAlign.center, // Center align text
                 ),
               ),
               SizedBox(height: 20),
@@ -50,7 +53,7 @@ class _Soal1State extends State<Soal1> {
               SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(5, (index) {
+                children: List.generate(3, (index) {
                   return Padding(
                     padding: const EdgeInsets.all(4.0),
                     child: ElevatedButton(
@@ -121,14 +124,17 @@ class _Soal2State extends State<Soal2> {
       backgroundColor: Color(0xFFFFF8EC),
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding:
+              const EdgeInsets.symmetric(horizontal: 24.0), // Adjusted margin
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center, // Center align text
             children: [
               Center(
                 child: Text(
                   'Berapa jumlah suku kata dari kata-kata ini?',
                   style: TextStyle(fontSize: 18),
+                  textAlign: TextAlign.center, // Center align text
                 ),
               ),
               SizedBox(height: 20),
@@ -140,7 +146,7 @@ class _Soal2State extends State<Soal2> {
               SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(5, (index) {
+                children: List.generate(3, (index) {
                   return Padding(
                     padding: const EdgeInsets.all(4.0),
                     child: ElevatedButton(
@@ -211,14 +217,16 @@ class _Soal3State extends State<Soal3> {
       backgroundColor: Color(0xFFFFF8EC),
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.symmetric(horizontal: 24.0), //
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center, // Center align text
             children: [
               Center(
                 child: Text(
                   'Berapa jumlah suku kata dari kata-kata ini?',
                   style: TextStyle(fontSize: 18),
+                  textAlign: TextAlign.center, // Center align text
                 ),
               ),
               SizedBox(height: 20),
@@ -230,7 +238,7 @@ class _Soal3State extends State<Soal3> {
               SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(5, (index) {
+                children: List.generate(3, (index) {
                   return Padding(
                     padding: const EdgeInsets.all(4.0),
                     child: ElevatedButton(
@@ -300,83 +308,89 @@ class _Soal4State extends State<Soal4> {
     return Scaffold(
       backgroundColor: Color(0xFFFFF8EC),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Tunjukkan kata yang benar!',
-              style: TextStyle(fontSize: 18),
-            ),
-            SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        selectedAnswer = 1;
-                      });
-                    },
-                    child: Text('Gajh'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: selectedAnswer == 1
-                          ? Color(0xFFF7C200)
-                          : Colors.white,
-                      foregroundColor: Colors.black,
-                      minimumSize: Size(80, 80),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
+        child: Padding(
+          padding:
+              const EdgeInsets.symmetric(horizontal: 24.0), // Adjusted margin
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center, // Center align text
+            children: [
+              Text(
+                'Tunjukkan kata yang benar!',
+                style: TextStyle(fontSize: 18),
+                textAlign: TextAlign.center, // Center align text
+              ),
+              SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          selectedAnswer = 1;
+                        });
+                      },
+                      child: Text('Gajh'),
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: Size(80, 80),
+                        backgroundColor: selectedAnswer == 1
+                            ? Color(0xFFF7C200)
+                            : Colors.white,
+                        foregroundColor: Colors.black,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
                       ),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        selectedAnswer = 2;
-                      });
-                    },
-                    child: Text('Gjah'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: selectedAnswer == 2
-                          ? Color(0xFFF7C200)
-                          : Colors.white,
-                      foregroundColor: Colors.black,
-                      minimumSize: Size(80, 80),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          selectedAnswer = 2;
+                        });
+                      },
+                      child: Text('Gjah'),
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: Size(80, 80),
+                        backgroundColor: selectedAnswer == 2
+                            ? Color(0xFFF7C200)
+                            : Colors.white,
+                        foregroundColor: Colors.black,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
                       ),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        selectedAnswer = 3;
-                      });
-                    },
-                    child: Text('Gajah'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: selectedAnswer == 3
-                          ? Color(0xFFF7C200)
-                          : Colors.white,
-                      foregroundColor: Colors.black,
-                      minimumSize: Size(80, 80),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          selectedAnswer = 3;
+                        });
+                      },
+                      child: Text('Gajah'),
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: Size(80, 80),
+                        backgroundColor: selectedAnswer == 3
+                            ? Color(0xFFF7C200)
+                            : Colors.white,
+                        foregroundColor: Colors.black,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: Padding(
@@ -425,44 +439,50 @@ class _Soal5State extends State<Soal5> {
     return Scaffold(
       backgroundColor: Color(0xFFFFF8EC),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Cari huruf S',
-              style: TextStyle(fontSize: 18),
-            ),
-            SizedBox(height: 20),
-            GridView.builder(
-              shrinkWrap: true,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                mainAxisSpacing: 10,
-                crossAxisSpacing: 10,
+        child: Padding(
+          padding:
+              const EdgeInsets.symmetric(horizontal: 24.0), // Adjusted margin
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center, // Center align text
+            children: [
+              Text(
+                'Cari huruf S',
+                style: TextStyle(fontSize: 18),
+                textAlign: TextAlign.center, // Center align text
               ),
-              itemCount: 9,
-              itemBuilder: (context, index) {
-                return ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      selectedAnswer = index;
-                    });
-                  },
-                  child: Text(index == 4 ? 'S' : '5'),
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: Size(80, 80),
-                    backgroundColor: selectedAnswer == index
-                        ? Color(0xFFF7C200)
-                        : Colors.white,
-                    foregroundColor: Colors.black,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0),
+              SizedBox(height: 20),
+              GridView.builder(
+                shrinkWrap: true,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3,
+                  mainAxisSpacing: 10,
+                  crossAxisSpacing: 10,
+                ),
+                itemCount: 9,
+                itemBuilder: (context, index) {
+                  return ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        selectedAnswer = index;
+                      });
+                    },
+                    child: Text(index == 4 ? 'S' : '5'),
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: Size(80, 80),
+                      backgroundColor: selectedAnswer == index
+                          ? Color(0xFFF7C200)
+                          : Colors.white,
+                      foregroundColor: Colors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
                     ),
-                  ),
-                );
-              },
-            ),
-          ],
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: Padding(
