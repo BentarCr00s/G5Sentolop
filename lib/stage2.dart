@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'result.dart';
 import 'models/answer_model.dart'; // Import AnswerModel
 
-List<Widget> stage2Screens(PageController pageController, List<AnswerModel> answers) {
+List<Widget> stage2Screens(
+    PageController pageController, List<AnswerModel> answers) {
   return [
     Soal1(pageController: pageController, answers: answers),
     Soal2(pageController: pageController, answers: answers),
@@ -105,19 +106,23 @@ class _Soal1State extends State<Soal1> {
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ElevatedButton(
-          onPressed: () {
-            widget.answers.add(AnswerModel(stage: 2, question: 1, answer: selectedAnswer));
-            widget.pageController.nextPage(
-              duration: Duration(milliseconds: 300),
-              curve: Curves.easeIn,
-            );
-          },
+          onPressed: selectedAnswer == null
+              ? null
+              : () {
+                  widget.answers.add(AnswerModel(
+                      stage: 2, question: 1, answer: selectedAnswer));
+                  widget.pageController.nextPage(
+                    duration: Duration(milliseconds: 300),
+                    curve: Curves.easeIn,
+                  );
+                },
           child: Text(
             'Konfirmasi',
             style: TextStyle(color: Colors.white),
           ),
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.green,
+            backgroundColor:
+                selectedAnswer == null ? Colors.grey : Colors.green,
             minimumSize: Size(double.infinity, 50),
           ),
         ),
@@ -219,19 +224,23 @@ class _Soal2State extends State<Soal2> {
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ElevatedButton(
-          onPressed: () {
-            widget.answers.add(AnswerModel(stage: 2, question: 2, answer: selectedAnswer));
-            widget.pageController.nextPage(
-              duration: Duration(milliseconds: 300),
-              curve: Curves.easeIn,
-            );
-          },
+          onPressed: selectedAnswer == null
+              ? null
+              : () {
+                  widget.answers.add(AnswerModel(
+                      stage: 2, question: 2, answer: selectedAnswer));
+                  widget.pageController.nextPage(
+                    duration: Duration(milliseconds: 300),
+                    curve: Curves.easeIn,
+                  );
+                },
           child: Text(
             'Konfirmasi',
             style: TextStyle(color: Colors.white),
           ),
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.green,
+            backgroundColor:
+                selectedAnswer == null ? Colors.grey : Colors.green,
             minimumSize: Size(double.infinity, 50),
           ),
         ),
@@ -333,19 +342,23 @@ class _Soal3State extends State<Soal3> {
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ElevatedButton(
-          onPressed: () {
-            widget.answers.add(AnswerModel(stage: 2, question: 3, answer: selectedAnswer));
-            widget.pageController.nextPage(
-              duration: Duration(milliseconds: 300),
-              curve: Curves.easeIn,
-            );
-          },
+          onPressed: selectedAnswer == null
+              ? null
+              : () {
+                  widget.answers.add(AnswerModel(
+                      stage: 2, question: 3, answer: selectedAnswer));
+                  widget.pageController.nextPage(
+                    duration: Duration(milliseconds: 300),
+                    curve: Curves.easeIn,
+                  );
+                },
           child: Text(
             'Konfirmasi',
             style: TextStyle(color: Colors.white),
           ),
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.green,
+            backgroundColor:
+                selectedAnswer == null ? Colors.grey : Colors.green,
             minimumSize: Size(double.infinity, 50),
           ),
         ),
@@ -447,19 +460,23 @@ class _Soal4State extends State<Soal4> {
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ElevatedButton(
-          onPressed: () {
-            widget.answers.add(AnswerModel(stage: 2, question: 4, answer: selectedAnswer));
-            widget.pageController.nextPage(
-              duration: Duration(milliseconds: 300),
-              curve: Curves.easeIn,
-            );
-          },
+          onPressed: selectedAnswer == null
+              ? null
+              : () {
+                  widget.answers.add(AnswerModel(
+                      stage: 2, question: 4, answer: selectedAnswer));
+                  widget.pageController.nextPage(
+                    duration: Duration(milliseconds: 300),
+                    curve: Curves.easeIn,
+                  );
+                },
           child: Text(
             'Konfirmasi',
             style: TextStyle(color: Colors.white),
           ),
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.green,
+            backgroundColor:
+                selectedAnswer == null ? Colors.grey : Colors.green,
             minimumSize: Size(double.infinity, 50),
           ),
         ),
@@ -561,21 +578,26 @@ class _Soal5State extends State<Soal5> {
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ElevatedButton(
-          onPressed: () {
-            widget.answers.add(AnswerModel(stage: 2, question: 5, answer: selectedAnswer));
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ResultScreen(answers: widget.answers),
-              ),
-            );
-          },
+          onPressed: selectedAnswer == null
+              ? null
+              : () {
+                  widget.answers.add(AnswerModel(
+                      stage: 2, question: 5, answer: selectedAnswer));
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          ResultScreen(answers: widget.answers),
+                    ),
+                  );
+                },
           child: Text(
             'Konfirmasi',
             style: TextStyle(color: Colors.white),
           ),
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.green,
+            backgroundColor:
+                selectedAnswer == null ? Colors.grey : Colors.green,
             minimumSize: Size(double.infinity, 50),
           ),
         ),

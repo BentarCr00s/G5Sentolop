@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'stage1.dart';
 import 'stage2.dart';
-import 'result.dart';
+import 'result.dart'; // Import ResultScreen
 import 'models/answer_model.dart'; // Import AnswerModel
 
 class GameScreen extends StatelessWidget {
@@ -10,13 +10,14 @@ class GameScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Reset answers when starting the game
+    _answers.clear();
+
     return Scaffold(
       body: PageView(
         controller: _pageController,
         children: [
-          StageScreen(pageController: _pageController, stageNumber: 1),
           ...stage1Screens(_pageController, _answers),
-          StageScreen(pageController: _pageController, stageNumber: 2),
           ...stage2Screens(_pageController, _answers),
           EndScreen(answers: _answers), // Pass answers to EndScreen
         ],
@@ -25,38 +26,8 @@ class GameScreen extends StatelessWidget {
   }
 }
 
-class StageScreen extends StatelessWidget {
-  final PageController pageController;
-  final int stageNumber;
-
-  StageScreen({required this.pageController, required this.stageNumber});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        pageController.nextPage(
-          duration: Duration(milliseconds: 300),
-          curve: Curves.easeIn,
-        );
-      },
-      child: Container(
-        color: Colors.yellow,
-        child: Center(
-          child: Text(
-            'Stage $stageNumber',
-            style: TextStyle(
-                fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 class EndScreen extends StatelessWidget {
   final List<AnswerModel> answers;
-
   EndScreen({required this.answers});
 
   @override
@@ -70,7 +41,8 @@ class EndScreen extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ResultScreen(answers: answers),
+                  builder: (context) =>
+                      ResultScreen(answers: answers), // Use ResultScreen
                 ),
               );
             },
