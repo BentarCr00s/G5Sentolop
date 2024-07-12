@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
 import 'game.dart';
 import 'dart:async';
+import 'dart:convert';
 import 'models/answer_model.dart';
-import 'result.dart';
-import 'package:shared_preferences/shared_preferences.dart'; // Import shared_preferences
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
+import 'package:intl/intl.dart';
 
 void main() {
   Gemini.init(apiKey: 'AIzaSyBk5LX2qCVqE69XWuylJtAq9JyyQR6-fTI');
@@ -84,6 +87,16 @@ class HomeScreen extends StatelessWidget {
     return prefs.containsKey('quiz_result');
   }
 
+  Future<List<Map<String, dynamic>>> _loadResults() async {
+    final directory = await getApplicationDocumentsDirectory();
+    final file = File('${directory.path}/quiz_results.json');
+    if (await file.exists()) {
+      final contents = await file.readAsString();
+      return List<Map<String, dynamic>>.from(jsonDecode(contents));
+    }
+    return [];
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -141,47 +154,32 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SizedBox(width: 10),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        bool hasResult = await _hasQuizResult();
-                        if (hasResult) {
-                          final prefs = await SharedPreferences.getInstance();
-                          final result = prefs.getString('quiz_result') ?? '';
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ResultDetailScreen(
-                                result: result,
-                                percentageStage1: 0, // Placeholder
-                                percentageStage2: 0, // Placeholder
-                              ),
-                            ),
-                          );
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                  'Silahkan selesaikan kuiz terlebih dahulu'),
-                            ),
-                          );
-                        }
-                      },
-                      child: Text(
-                        'Hasil',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xE5DAC6),
-                        minimumSize: Size(double.infinity, 50),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                    ),
-                  ),
                 ],
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () async {
+                  final results = await _loadResults();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ResultsListScreen(results: results),
+                    ),
+                  );
+                },
+                child: Text(
+                  'Daftar Hasil',
+                  style: TextStyle(color: Color(0xFFF7C200)),
+                ),
+                style: ElevatedButton.styleFrom(
+                  minimumSize: Size(double.infinity, 50),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    side: BorderSide(
+                        color: Color(0xFFF7C200),
+                        width: 2), // Updated stroke/outline color
+                  ),
+                ),
               ),
               SizedBox(height: 20),
               InfoCard(
@@ -254,6 +252,75 @@ class _InfoCardState extends State<InfoCard> {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class ResultsListScreen extends StatelessWidget {
+  final List<Map<String, dynamic>> results;
+
+  ResultsListScreen({required this.results});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Daftar Hasil'),
+        backgroundColor: Colors.orange,
+      ),
+      body: ListView.builder(
+        itemCount: results.length,
+        itemBuilder: (context, index) {
+          final result = results[index];
+          final DateTime dateTime = DateTime.parse(result['datetime']);
+          final String formattedDate = DateFormat('yyyy-MM-dd').format(dateTime);
+          final String formattedTime = DateFormat('HH:mm').format(dateTime); // Format to hour and minute
+
+          // Calculate the total score and divide by 2 to ensure it doesn't exceed 100
+          final double totalScore = (result['percentageStage1'] + result['percentageStage2']) / 2;
+
+          return Container(
+            margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+            padding: EdgeInsets.all(16.0),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12.0),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  spreadRadius: 2,
+                  blurRadius: 5,
+                  offset: Offset(0, 3),
+                ),
+              ],
+            ),
+            child: Row(
+              children: [
+                CircleAvatar(
+                  child: Text('${index + 1}'),
+                ),
+                SizedBox(width: 16.0),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        formattedDate,
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Text(formattedTime), // Display formatted time
+                    ],
+                  ),
+                ),
+                Text(
+                  'Nilai : ${totalScore.toStringAsFixed(2)}',
+                  style: TextStyle(color: Colors.orange),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }

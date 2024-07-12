@@ -1,24 +1,45 @@
 import 'package:flutter/material.dart';
-import 'dart:convert'; // Import dart:convert for jsonDecode
-import 'models/answer_model.dart'; // Import AnswerModel
-import 'main.dart'; // Import halaman utama
-import 'package:flutter_gemini/flutter_gemini.dart'; // Import flutter_gemini
-import 'package:shared_preferences/shared_preferences.dart'; // Import shared_preferences
+import 'dart:convert';
+import 'models/answer_model.dart';
+import 'main.dart';
+import 'package:flutter_gemini/flutter_gemini.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
+import 'package:intl/intl.dart';
 
 class ResultScreen extends StatelessWidget {
   final List<AnswerModel> answers;
 
   ResultScreen({required this.answers});
 
-  // Kunci jawaban
   final Map<int, List<int>> answerKeys = {
     1: [2, 3, 2, 3, 4], // Stage 1
     2: [1, 2, 2, 2, 2], // Stage 2
   };
 
-  Future<void> _saveResult(String result) async {
+  Future<void> _saveResult(
+      String result, double percentageStage1, double percentageStage2) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('quiz_result', result);
+
+    final directory = await getApplicationDocumentsDirectory();
+    final file = File('${directory.path}/quiz_results.json');
+    List<Map<String, dynamic>> results = [];
+
+    if (await file.exists()) {
+      final contents = await file.readAsString();
+      results = List<Map<String, dynamic>>.from(jsonDecode(contents));
+    }
+
+    results.add({
+      'datetime': DateTime.now().toString(),
+      'result': result,
+      'percentageStage1': percentageStage1,
+      'percentageStage2': percentageStage2,
+    });
+
+    await file.writeAsString(jsonEncode(results));
   }
 
   @override
@@ -126,7 +147,8 @@ class ResultScreen extends StatelessWidget {
               (match) => '**${match.group(1)}**',
             );
 
-            await _saveResult(formattedResult); // Save result to local disk
+            await _saveResult(formattedResult, percentageStage1,
+                percentageStage2); // Save result to local disk
 
             Navigator.push(
               context,
@@ -298,6 +320,74 @@ class ResultDetailScreen extends StatelessWidget {
           }
         },
         child: Icon(Icons.refresh),
+      ),
+    );
+  }
+}
+
+class ResultsListScreen extends StatelessWidget {
+  final List<Map<String, dynamic>> results;
+
+  ResultsListScreen({required this.results});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Daftar Hasil'),
+        backgroundColor: Colors.orange,
+      ),
+      body: ListView.builder(
+        itemCount: results.length,
+        itemBuilder: (context, index) {
+          final result = results[index];
+          final DateTime dateTime = DateTime.parse(result['datetime']);
+          final String formattedDate =
+              DateFormat('yyyy-MM-dd').format(dateTime);
+          final String formattedTime =
+              DateFormat('HH:mm').format(dateTime); // Format to hour and minute
+
+          return Container(
+            margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+            padding: EdgeInsets.all(16.0),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12.0),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  spreadRadius: 2,
+                  blurRadius: 5,
+                  offset: Offset(0, 3),
+                ),
+              ],
+            ),
+            child: Row(
+              children: [
+                CircleAvatar(
+                  child: Text('${index + 1}'),
+                ),
+                SizedBox(width: 16.0),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        formattedDate,
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Text(formattedTime), // Display formatted time
+                    ],
+                  ),
+                ),
+                Text(
+                  'Nilai : ${result['percentageStage1'] + result['percentageStage2']}',
+                  style: TextStyle(color: Colors.orange),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
